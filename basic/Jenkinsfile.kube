@@ -10,18 +10,17 @@ kube().pod( "kubernetes", "cypress" ).
         resourceRequestCpu: '1',
         resourceLimitCpu: '2',
         resourceRequestMemory: '1Gi',
-        resourceLimitMemory: '4Gi',
-        envVars: [
-            envVar(key: 'CYPRESS_RECORD_KEY', value: credentials('cypress-example-kitchensink-record-key'))
-        ]) ).
+        resourceLimitMemory: '4Gi') ).
 node {
     stage('build and test') {
         container('cypress') {
             git url: "https://github.com/davidcox67/cypress-example-kitchensink", branch: 'master'
-            sh """
-                npm ci
-                npm run test:ci:record
-            """.stripIndent()
+            withCredentials([string(credentialsId: 'cypress-example-kitchensink-record-key', variable: 'CYPRESS_RECORD_KEY')] ) {
+                sh """
+                    npm ci
+                    npm run test:ci:record
+                """.stripIndent()
+            }
         }
     }
 }

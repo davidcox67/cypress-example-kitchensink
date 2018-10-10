@@ -3,14 +3,7 @@ library identifier: 'jenkins-global-lib'
 kube().pod( "kubernetes", "cypress" ).
     withServiceAccount( "jenkins" ).
     withIdleMinutes( 60 ).
-    withContainer( containerTemplate(
-        name: 'cypress', image: 'cypress/base:10',
-        command: 'cat', 
-        ttyEnabled: true,
-        resourceRequestCpu: '1',
-        resourceLimitCpu: '2',
-        resourceRequestMemory: '1Gi',
-        resourceLimitMemory: '4Gi') ).
+    withCypress( 'base:10' ).
 node {
     stage('build and test') {
         container('cypress') {
